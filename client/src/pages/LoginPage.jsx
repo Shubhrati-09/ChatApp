@@ -65,6 +65,7 @@ const LoginPage = () => {
             className="p-2 border border-gray-500 rounded-md focus:outline-none"
             placeholder="Full Name"
             required
+            autoComplete="off"
           />
         )}
 
@@ -76,6 +77,7 @@ const LoginPage = () => {
               type="email"
               placeholder="Email Address"
               required
+              autoComplete="off"
               className="p-2 border border-gray-500
             rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
@@ -86,6 +88,7 @@ const LoginPage = () => {
               type="password"
               placeholder="Password"
               required
+              autoComplete="new-password"
               className="p-2 border border-gray-500
             rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
