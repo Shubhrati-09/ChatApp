@@ -83,7 +83,7 @@ export const AuthProvider = ({children})=>{
 
         newSocket.on("getOnlineUsers",(userIds)=>{
             setOnlineUsers(userIds);
-        })
+        });
     }
 
     useEffect(()=>{
@@ -92,6 +92,7 @@ export const AuthProvider = ({children})=>{
         }
         checkAuth();
     },[])
+
     const value = {
         axios,
         authUser,

@@ -6,8 +6,8 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 const ProfilePage = () => {
   const { authUser, updateProfile } = useContext(AuthContext);
 
-  const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState(null);
   const [name, setName] = useState(authUser.fullName);
   const [bio, setBio] = useState(authUser.bio);
 

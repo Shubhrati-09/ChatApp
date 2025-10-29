@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import assets from "../assets/assets";
 import { AuthContext } from "../../context/AuthContext.jsx";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   
@@ -12,10 +13,14 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
+  const [termsAgreed, setTermsAgreed] = useState(false);
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-
+    if(!termsAgreed) {
+      toast("Agree to the terms and condition first.")
+      return;
+    }
     if(currState === "Sign up" && !isDataSubmitted){
       setIsDataSubmitted(true);
       return ;
@@ -104,7 +109,7 @@ const LoginPage = () => {
         </button>
 
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <input type="checkbox" />
+          <input type="checkbox"  onClick={()=>setTermsAgreed(!termsAgreed)}/>
           <p>Agree to the terms of use & privacy policy.</p>
         </div>
 
