@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 const LoginPage = () => {
   
-  const { login } = useContext(AuthContext);
+  const { login, restore, setRestore } = useContext(AuthContext);
 
   const [currState, setCurrState] = useState("Sign up");
   const [fullName, setfullName] = useState("");
@@ -17,7 +17,7 @@ const LoginPage = () => {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    if(!termsAgreed) {
+    if(currState === "Sign up" && !termsAgreed) {
       toast("Agree to the terms and condition first.")
       return;
     }
@@ -44,20 +44,20 @@ const LoginPage = () => {
       <form
         onSubmit={onSubmitHandler}
         className="border-2 bg-white/8 text-white border-gray-500 p-6 
-      flex flex-col gap-6 rounded-lg shadow-lg"
+      flex flex-col gap-6 rounded-lg shadow-lg max-sm:w-[min(90%,350px)] w-[350px]"
       >
         <h2 className="font-medium text-2xl flex justify-between items-center">
           {currState}
-          {isDataSubmitted && (
+          {(isDataSubmitted || restore) && (
             <img
-              onClick={() => setIsDataSubmitted(false)}
+              onClick={() => (setIsDataSubmitted(false), setRestore(false))}
               src={assets.arrow_icon}
               alt=""
-              className="w-5 cursor pointer"
+              className="w-5 cursor-pointer"
             />
           )}
         </h2>
-        {currState === "Sign up" && !isDataSubmitted && (
+        {((currState === "Sign up" && !isDataSubmitted) || (currState === "Login" && restore)) && (
           <input
             type="text"
             onChange={(e) => setfullName(e.target.value)}
@@ -92,7 +92,7 @@ const LoginPage = () => {
           </>
         )}
 
-        {currState === "Sign up" && isDataSubmitted && (
+        {(restore || isDataSubmitted) && (
           <textarea
             onChange={(e) => setBio(e.target.value)}
             value={bio}
@@ -104,14 +104,15 @@ const LoginPage = () => {
           ></textarea>
         )}
 
+
         <button className="py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer">
           {currState === "Sign up" ? "Create Account" : "Login Now"}
         </button>
 
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        {currState==="Sign up" && (<div className="flex items-center gap-2 text-sm text-gray-500">
           <input type="checkbox"  onClick={()=>setTermsAgreed(!termsAgreed)}/>
           <p>Agree to the terms of use & privacy policy.</p>
-        </div>
+        </div>)}
 
         <div className="flex flex-col gap-2">
           {currState === "Sign up" ? (
@@ -132,7 +133,10 @@ const LoginPage = () => {
             <p className="text-sm text-gray-600">
               Create an account{" "}
               <span
-                onClick={() => setCurrState("Sign up")}
+                onClick={() => {
+                  setCurrState("Sign up")
+                  setRestore(false);
+                }}
                 className="font-medium text-violet-500 cursor-pointer"
               >
                 Click here

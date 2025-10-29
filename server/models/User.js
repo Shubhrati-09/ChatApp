@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true, minlength: 6},
     profilePic: {type: String, default: ""},
     bio: {type: String},
+    isDeleted: {type: Boolean, default: false},
+    deletedAt: {type: Date, default: null}
 }, {timestamps: true})
 
 const User = mongoose.model("User",userSchema);

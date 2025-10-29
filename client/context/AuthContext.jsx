@@ -12,6 +12,7 @@ export const AuthProvider = ({children})=>{
     const [authUser,setAuthUser] = useState(null);
     const [onlineUsers,setOnlineUsers] = useState([]);
     const [socket,setSocket] = useState(null);
+    const [restore,setRestore] = useState(false);
 
     //check if the user is authenticated and if so, set the user data
     //and connect the socket
@@ -29,8 +30,16 @@ export const AuthProvider = ({children})=>{
     }
     //Login function to handle user authentication and connection
     const login = async (state,credentials)=>{
+
         try {
-            const {data} = await axios.post(`/api/auth/${state}`,credentials);
+            const endpoint = restore ? "/api/auth/restore" : `/api/auth/${state}`;
+            const {data} = await axios.post(endpoint,credentials);
+            if(data.deleted){
+                toast(data.message);
+                setRestore(true);
+                return;
+            }
+
             if(data.success){
                 setAuthUser(data.userData);
                 connectSocket(data.userData);
@@ -38,8 +47,10 @@ export const AuthProvider = ({children})=>{
                 setToken(data.token);
                 localStorage.setItem("token",data.token);
                 toast.success(data.message);
+
+                setRestore(false);
             } else {
-                toast.error(error.message);
+                toast.error(data.message);
             }
         } catch (error) {
             console.log("Error in login Context: ", error.message);
@@ -70,6 +81,21 @@ export const AuthProvider = ({children})=>{
             toast.error(error.message);
         }
     }
+
+    //Delete function to delete the user
+    const deleteUser = async(userId) => {
+        try {
+            const {data} = await axios.put(`/api/auth/delete-user/${userId}`);
+            if(data.success){
+                //account deleted successfully, then toast the mesg and log out the user
+                toast.success("Account deleted successfully.");
+                await logout();
+            }
+        } catch (error){
+            toast.error(error.message);
+        }
+    }
+
     //Connect socket function to handle socket connection and online user updates
     const connectSocket = (userData)=>{
         if(!userData || socket?.connected) return;
@@ -100,7 +126,10 @@ export const AuthProvider = ({children})=>{
         socket,
         login,
         logout,
-        updateProfile
+        updateProfile,
+        deleteUser,
+        restore,
+        setRestore
     }
     return (
         <AuthContext.Provider value = {value}>
