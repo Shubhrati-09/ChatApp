@@ -29,8 +29,7 @@ const ProfilePage = () => {
     };
   }
 
-  const deleteAccount = async() =>{
-    //functionality to delete account
+  const deleteAccount = async()=>{
     await deleteUser(authUser._id);
   }
 
